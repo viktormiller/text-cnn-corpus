@@ -124,8 +124,8 @@ sub getBody
   return $Self->{body} if exists $Self->{body};
 
   # get the article body.
-  my @linesOfText = $Self->{htmlParser}->findvalues('/html/body/div/div/div/div/div/p');
-  @linesOfText = $Self->{htmlParser}->findvalues('/html/body/div/div/div/div/div/div/div/div/div/p') if (@linesOfText == 0);
+  my @linesOfText = $Self->{htmlParser}->findvalues('//div[@class="zn-body__paragraph"]');
+  @linesOfText = $Self->{htmlParser}->findvalues('//div[@class="zn-body__paragraph"]') if (@linesOfText == 0);
 
   # peel off wrot text.
   foreach my $line (@linesOfText)
@@ -155,7 +155,7 @@ sub getBody
 
 C<getCategories> returns an array reference of strings of categories assigned to the document. They are
 the phrases and words extracted from the
-C</html/head/meta[@name="KEYWORDS"]> field in the HTML of the
+C</html/head/meta[@name="keywords"]> field in the HTML of the
 document, from the 'RELATED TOPICS' section of the document, and from the URL of the document.
 
 =cut
@@ -168,9 +168,9 @@ sub getCategories
   return $Self->{categories_all} if exists $Self->{categories_all};
 
   # get the categories.
-  my @categories = $Self->{htmlParser}->findvalues('/html/head/meta[@name="KEYWORDS"]/@content');
-  my @relatedCategories = $Self->{htmlParser}->findvalues('/html/body/div/div/div/div/div/div/div[@class="cnn_strylctcntr cnn_strylctcqrelt"]/ul/li');
-  push @categories, @relatedCategories;
+  my @categories = $Self->{htmlParser}->findvalues('/html/head/meta[@name="keywords"]/@content');
+  #my @relatedCategories = $Self->{htmlParser}->findvalues('/html/body/div/div/div/div/div/div/div[@class="cnn_strylctcntr cnn_strylctcqrelt"]/ul/li');
+  #push @categories, @relatedCategories;
   @categories = split (/\,\s*/, join (',', @categories));
 
   # extract possible categories from the url.
@@ -279,7 +279,7 @@ sub getDate
   return undef if (exists ($Self->{date}));
 
   # get the date (for the new format).
-  my $nodes = $Self->{htmlParser}->findnodes('//*[@class="cnn_strytmstmp"]/script');
+  my $nodes = $Self->{htmlParser}->findnodes('//*[@itemprop="datePublished"]');
   my $date = undef;
   foreach my $node (@$nodes)
   {
@@ -396,9 +396,9 @@ sub getHighlights
   return $Self->{highlights} if exists $Self->{highlights};
 
   # get the categories.
-  my @possibleHighlights = $Self->{htmlParser}->findvalues('/html/body/div/div/div/div/div/div/div/ul[@class="cnn_bulletbin cnnStryHghLght"]/li');
-  @possibleHighlights = $Self->{htmlParser}->findvalues('/html/body/div/div/div/div[@id="cnnHeaderRightCol"]/ul/li') if (@possibleHighlights == 0);
-  @possibleHighlights = $Self->{htmlParser}->findvalues('/html/body/div/div/div/div/div[@id="cnnHeaderRightCol"]/ul/li') if (@possibleHighlights == 0);
+  my @possibleHighlights = $Self->{htmlParser}->findvalues('//li[@class="el__storyhighlights__item el__storyhighlights--normal"]');
+  @possibleHighlights = $Self->{htmlParser}->findvalues('//*[@id="body-text"]/div[1]/div[1]/div/div[1]/ul/li') if (@possibleHighlights == 0);
+  @possibleHighlights = $Self->{htmlParser}->findvalues('/html/body//div/div[@class="el__storyhighlights"]/ul/li') if (@possibleHighlights == 0);
 
   my @highlights= ();
   foreach my $highlight (@possibleHighlights)
@@ -446,7 +446,7 @@ sub getTitle
   return $Self->{title} if exists $Self->{title};
 
   # get the headline.
-  my @titleLines = $Self->{htmlParser}->findvalues('/html/head/title/div/div/div/h1');
+  my @titleLines = $Self->{htmlParser}->findvalues('/html//h1[@class="pg-headline"]');
   unless (@titleLines)
   {
     @titleLines = $Self->{htmlParser}->findvalues('/html/head/title');

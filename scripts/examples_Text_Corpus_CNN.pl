@@ -5,6 +5,8 @@
 use strict;
 use warnings;
 
+$ENV{TEXT_CORPUS_CNN_CORPUSDIRECTORY} = 'corps';
+
 my $corpusDirectory;
 $corpusDirectory = $ENV{TEXT_CORPUS_CNN_CORPUSDIRECTORY} if exists $ENV{TEXT_CORPUS_CNN_CORPUSDIRECTORY};
 die '$corpusDirectory' . " not defined.\n" unless defined $corpusDirectory;

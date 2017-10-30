@@ -122,7 +122,7 @@ sub new
   $Self->{sitenewsOldDirectory} = sprintf $sitenewsOldDirectory;
 
   # get the site news url.
-  $Self->{siteMapNewsURL} = 'http://www.cnn.com/sitemap_news.xml';
+  $Self->{siteMapNewsURL} = 'http://edition.cnn.com/sitemaps/sitemap-news.xml';
   $Self->{siteMapNewsURL} = $Parameters{siteMapNewsURL} if exists $Parameters{siteMapNewsURL};
 
   # set the cache expiration.
