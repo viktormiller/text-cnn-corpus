@@ -124,7 +124,7 @@ sub getBody
   return $Self->{body} if exists $Self->{body};
 
   # get the article body.
-  my @linesOfText = $Self->{htmlParser}->findvalues('//div[@class="zn-body__paragraph"]');
+  my @linesOfText = $Self->{htmlParser}->findvalues('//*[@class="zn-body__paragraph speakable"]');
   @linesOfText = $Self->{htmlParser}->findvalues('//div[@class="zn-body__paragraph"]') if (@linesOfText == 0);
 
   # peel off wrot text.

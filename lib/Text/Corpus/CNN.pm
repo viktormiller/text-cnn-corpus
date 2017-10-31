@@ -12,9 +12,11 @@ use File::Copy;
 use XML::LibXML;
 use Encode;
 use Log::Log4perl;
-use Text::Corpus::CNN::Document;
 use URI::Escape;
 use HTML::Encoding 'encoding_from_html_document';
+use Text::Corpus::CNN::Document;
+use Data::Dump qw(dump);
+
 my $el = "\n";
 
 BEGIN {
@@ -122,8 +124,9 @@ sub new
   $Self->{sitenewsOldDirectory} = sprintf $sitenewsOldDirectory;
 
   # get the site news url.
-  $Self->{siteMapNewsURL} = 'http://edition.cnn.com/sitemaps/sitemap-news.xml';
+#  $Self->{siteMapNewsURL} = 'http://www.cnn.com/sitemap_news.xml';
   $Self->{siteMapNewsURL} = $Parameters{siteMapNewsURL} if exists $Parameters{siteMapNewsURL};
+  $Self->{siteMapNewsURL} = 'http://www.cnn.com/sitemaps/sitemap-articles-2017-10.xml';
 
   # set the cache expiration.
   $Self->{cacheExpiration} = 'never';
@@ -171,6 +174,7 @@ sub _fetchNewSiteNews
   return undef if (time - $lastFetchTime < 10*60);
 
   # fetch the page and store it in a file.
+  dump $Self->{siteMapNewsURL};
   my $fetchStatus = getstore ($Self->{siteMapNewsURL}, sprintf $filePathName);
   if ($fetchStatus != 200)
   {
@@ -630,10 +634,11 @@ sub _getArticle
     unless (defined $encoding)
     {
       my $logger = Log::Log4perl->get_logger();
-      $logger->logwarn ("could not determine encoding, defaulting to iso-8859-1: $md5OfUrl: $url\n");
+      $logger->logwarn ("could not determine encoding, defaulting to utf-8: $md5OfUrl: $url\n");
     }
-    $encoding = 'iso-8859-1' unless defined $encoding;
-    $pageContents = decode ($encoding, $pageContents);
+    $encoding = 'utf-8' unless defined $encoding;
+
+    #$pageContents = decode ($encoding, $pageContents);
     return [$pageContents, $encoding];
   }
 
@@ -676,10 +681,11 @@ sub _getArticle
   unless (defined $encoding)
   {
     my $logger = Log::Log4perl->get_logger();
-    $logger->logwarn ("could not determine encoding, defaulting to iso-8859-1: $md5OfUrl: $url\n");
+    $logger->logwarn ("could not determine encoding, defaulting to utf-8: $md5OfUrl: $url\n");
   }
-  $encoding = 'iso-8859-1' unless defined $encoding;
-  $pageContents = decode ($encoding, $pageContents);
+  $encoding = 'utf-8' unless defined $encoding;
+
+  #$pageContents = decode ($encoding, $pageContents);
   return [$pageContents, $encoding];
 }
 
